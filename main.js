@@ -1,63 +1,51 @@
-const form = document.getElementById('form-atividade');
-const imgAprovado = '<img src="./images/aprovado.png" alt="Emoji celebrando" />';
-const imgReprovado = '<img src="./images/reprovado.png" alt="Emoji decepcionado" />';
-const atividades = [];
-const notas = [];
-const spanAprovado = '<span class="resultado aprovado">Aprovado</span>';
-const spanReprovado = '<span class="resultado reprovado">Reprovado</span>';
-const notaMinima = parseFloat(prompt("Digite a nota mínima"));
-
-let linhas = '';
+const form = document.getElementById('form-contatos')
+let lines = ''
+const totalContatos = []
 
 form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    adicionaLinha();
-    atualizaTabela();
-    atualizaMediaFinal();
-});
+    addLine();
+    somaContados();
+})
 
-function adicionaLinha() {
-    const inputNomeAtividade = document.getElementById('nome-atividade');
-    const inputNotaAtividade = document.getElementById('nota-atividade');
+function addLine() {
+    const name = document.getElementById('nome-contato')
+    const tel = document.getElementById('telefone-contato')
+    const errorName = document.getElementById('msg-error-name')
+    const errorTel = document.getElementById('msg-error-tel')
+    const tableBody = document.querySelector('tbody')
 
-    if (atividades.includes(inputNomeAtividade.value)) {
-        alert(`A atividade: ${inputNomeAtividade.value} já foi inserida`);
+    if (name.value === '') {
+        errorName.innerHTML = 'Adicione um nome !'
+    } else if (tel.value === '') {
+        errorName.innerHTML = ''
+        errorTel.innerHTML = 'Adicione o telefone !'
+    } else if (totalContatos.includes(name.value)){
+        errorTel.innerHTML=''
+        errorName.innerHTML = `O contado ${name.value} já foi cadastrato, por favor insira outro nome.`
     } else {
-    atividades.push(inputNomeAtividade.value);
-    notas.push(parseFloat(inputNotaAtividade.value));
+        errorName.innerHTML = ''
+        totalContatos.push(name.value)
+        let tablecollum = '<tr>'
+        tablecollum = tablecollum + '<td><img src="./IMAGE/profile.png" alt="" id="imagem"></td>'
+        tablecollum = tablecollum + `<td>${name.value}</td>`
+        tablecollum = tablecollum + `<td>${tel.value}</td>`
+        tablecollum = tablecollum + '</tr>'
+    
+        lines = lines + tablecollum
+    
+        tableBody.innerHTML = lines
 
-    let linha = '<tr>';
-    linha += `<td>${inputNomeAtividade.value}</td>`;
-    linha += `<td>${inputNotaAtividade.value}</td>`;
-    linha += `<td>${inputNotaAtividade.value >= notaMinima ? imgAprovado : imgReprovado}</td>`;
-    linha += '</tr>';
-
-    linhas += linha;
-}    
-
-    inputNomeAtividade.value = '';
-    inputNotaAtividade.value = '';
+        name.value = ''
+        tel.value = ''
+        errorTel.innerHTML=''
+        errorName.innerHTML = ''
+        }
 }
 
-function atualizaTabela() {
-    const corpoTabela = document.querySelector('tbody');
-    corpoTabela.innerHTML = linhas;
-}
+function somaContados() {
+    const qtdContado = document.getElementById('total-contatos')
 
-function atualizaMediaFinal() {
-    const mediaFinal = calculaMediaFinal();
-
-    document.getElementById('media-final-valor').innerHTML = mediaFinal.toFixed(2);
-    document.getElementById('media-final-resultado').innerHTML = mediaFinal >= notaMinima ? spanAprovado : spanReprovado;
-}
-
-function calculaMediaFinal() {
-    let somaDasNotas = 0;
-
-    for (let i = 0; i <notas.length; i++) {
-        somaDasNotas += notas[i];
-    }
-
-    return somaDasNotas / notas.length;
+    qtdContado.innerHTML = totalContatos.length
 }
